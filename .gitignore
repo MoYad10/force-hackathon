@@ -112,6 +112,7 @@ venv.bak/
 
 # Data
 data/*.csv
+virtual-metering-source/**/*.csv
 
 # Pickles
 *.pkl

@@ -2,16 +2,17 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
-from sklearn.metrics import mean_absolute_error, mean_squared_error
+from sklearn.linear_model import LinearRegression as Predictor
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+# from xgboost import XGBRegressor as Predictor
+
 
 def preprocess(df):
-    df = df[df["SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"] > 0]
-
     df = df.dropna()
+    df = df.dropna(axis=1, how="all")
+    df = df.drop(["Unnamed: 0", "timestamp", "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"], axis=1)
 
     output_tags = [
         "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
@@ -19,13 +20,19 @@ def preprocess(df):
         "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
     ]
 
-    y = df[output_tags]
-    y.columns = ["gas", "water", "oil"]
+    y_tags = ["SKAP_18FI381-VFlLGas/Y/10sSAMP|average"]
 
-    X = df.drop(output_tags + ["SKAP_18HV3806/BCH/10sSAMP|stepinterpolation", "Unnamed: 0", "timestamp"], axis=1)
+    df_train, df_test = train_test_split(df, test_size=0.1, shuffle=False)
 
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33, shuffle=False)
+    X_train = df_train.drop(output_tags, axis=1)
+    y_train = df_train[y_tags]
+    y_train.columns = ["gas"]
 
+    X_test = df_test.drop(output_tags, axis=1)
+    y_test = df_test[y_tags]
+    y_test.columns = ["gas"]
+
+    # Scale
     X_scaler = StandardScaler()
     X_train_scaled = X_scaler.fit_transform(X_train)
     X_test_scaled = X_scaler.transform(X_test)
@@ -44,7 +51,7 @@ def preprocess(df):
 
 
 def train(X, y):
-    lr = LinearRegression()
+    lr = Predictor()
     model = lr.fit(X, y)
     with open("../data/model.pkl", "wb") as f:
         pickle.dump(model, f)
@@ -60,6 +67,7 @@ def test(X, y_true):
     y_pred = model.predict(X)
 
     print(score(y_scaler.inverse_transform(y_pred), y_scaler.inverse_transform(y_true)))
+    plot(y_scaler.inverse_transform(y_pred), y_scaler.inverse_transform(y_true))
 
 
 def score(Y_pred, Y_true):
@@ -68,6 +76,19 @@ def score(Y_pred, Y_true):
     L2true = np.sqrt(np.sum(Y_true ** 2))
 
     return 2 * E / (L2pred + L2true)
+
+
+def plot(y_pred, y_true):
+    df_y_pred = pd.DataFrame(y_pred)
+    df_y_true = pd.DataFrame(y_true)
+
+    df = pd.concat((df_y_pred, df_y_true), axis=1)
+    df.columns = ["gas_pred", "gas_true"]
+    df.plot()
+
+    import matplotlib.pyplot as plt
+
+    plt.show()
 
 
 def main():

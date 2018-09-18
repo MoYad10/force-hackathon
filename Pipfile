@@ -11,6 +11,8 @@ numpy = "*"
 matplotlib = "*"
 scikit-learn = "*"
 scipy = "*"
+lightgbm = "*"
+xgboost = "*"
 
 [dev-packages]
 
