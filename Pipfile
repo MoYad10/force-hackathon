@@ -5,6 +5,10 @@ name = "pypi"
 
 [packages]
 cognite-sdk = "*"
+jupyter = "*"
+pandas = "*"
+numpy = "*"
+matplotlib = "*"
 
 [dev-packages]
 
