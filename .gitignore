@@ -111,8 +111,7 @@ venv.bak/
 .DS_Store
 
 # Data
-d02.csv
-d03.csv
+data/*.csv
 
-# Models
-model.pkl
+# Pickles
+*.pkl

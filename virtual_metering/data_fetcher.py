@@ -8,8 +8,6 @@ from cognite.data_transfer_service import DataSpec, DataTransferService, TimeSer
 
 def main():
     configure_session(api_key=os.getenv("COGNITE_API_KEY"), project="akerbp", debug=True)
-    print(os.getenv("COGNITE_API_KEY"))
-    print(os.getenv("COGNITE_PROJECT"))
     tags_d03 = []
     tags_d02 = []
 
@@ -51,7 +49,7 @@ def main():
         time_series=d02_input_time_series,
         aggregates=["avg"],
         granularity="10m",
-        start=datetime(2014, 1, 1),
+        start=datetime(2014, 3, 1),
         end="now",
         label="d02",
     )
@@ -59,19 +57,19 @@ def main():
         time_series=d03_input_time_series,
         aggregates=["avg"],
         granularity="10m",
-        start=datetime(2014, 1, 1),
+        start=datetime(2014, 3, 1),
         end="now",
         label="d03",
     )
 
     data_spec = DataSpec(time_series_data_specs=[d02_tsds, d03_tsds])
 
-    dts = DataTransferService(data_spec, num_of_processes=10)
+    dts = DataTransferService(data_spec, num_of_processes=5)
 
     df_dict = dts.get_dataframes()
 
     for label, df in df_dict.items():
-        df.to_csv(f"./{label}.csv")
+        df.to_csv(f"../data/{label}.csv")
 
 
 if __name__ == "__main__":
