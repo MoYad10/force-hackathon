@@ -1,5 +1,6 @@
 import pickle
 
+import numpy as np
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_absolute_error, mean_squared_error
@@ -26,7 +27,6 @@ def preprocess(df):
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
 
     X_scaler = StandardScaler()
-
     X_train_scaled = X_scaler.fit_transform(X_train)
     X_test_scaled = X_scaler.transform(X_test)
 
@@ -52,8 +52,17 @@ def test(X, y_true):
     l1_res = mean_absolute_error(y_true, y_pred)
     l2_res = mean_squared_error(y_true, y_pred)
 
+    print(score(y_pred, y_true))
     print(l1_res)
     print(l2_res)
+
+
+def score(Y_pred, Y_true):
+    E = np.sqrt(np.sum((Y_pred - Y_true) ** 2))
+    L2pred = np.sqrt(np.sum(Y_pred ** 2))
+    L2true = np.sqrt(np.sum(Y_true ** 2))
+
+    return 2 * E / (L2pred + L2true)
 
 
 def main():
