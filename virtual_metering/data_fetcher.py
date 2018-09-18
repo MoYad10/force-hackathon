@@ -15,12 +15,13 @@ def main():
 
     for root, subdirs, files in os.walk("../tags"):
         for file in files:
-            if file in ("well_tags.csv", "routing.csv", "output.csv"):
+            if file in ("well_tags.csv", "routing.csv", "output.csv", "riser_tags.csv", "template_tags.csv"):
                 with open(os.path.join(root, file)) as f:
                     df = pd.read_csv(f)
 
-                    placements_d03 = ["WellD03", "T3 WGM"]
-                    placements_d02 = ["WellD02", "T3 WGM"]
+                    placements = ["T3 WGM", "Template", "Riser"]
+                    placements_d03 = ["WellD03"] + placements
+                    placements_d02 = ["WellD02"] + placements
 
                     tags_d03.append(df[df["placement"].isin(placements_d03)])
 
@@ -66,7 +67,7 @@ def main():
 
     data_spec = DataSpec(time_series_data_specs=[d02_tsds, d03_tsds])
 
-    dts = DataTransferService(data_spec)
+    dts = DataTransferService(data_spec, num_of_processes=10)
 
     df_dict = dts.get_dataframes()
 

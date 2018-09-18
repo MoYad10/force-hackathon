@@ -109,3 +109,7 @@ venv.bak/
 
 # Other
 .DS_Store
+
+# Data
+d02.csv
+d03.csv
