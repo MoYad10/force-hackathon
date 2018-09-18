@@ -24,14 +24,13 @@ def main():
                     placements_d02 = ["WellD02"] + placements
 
                     tags_d03.append(df[df["placement"].isin(placements_d03)])
-
                     tags_d02.append(df[df["placement"].isin(placements_d02)])
 
     tags_d02_concat = pd.concat(tags_d02, ignore_index=True)
     tags_d03_concat = pd.concat(tags_d03, ignore_index=True)
 
-    # print(tags_d02_concat)
-    # print(tags_d03_concat)
+    tags_d02_concat = tags_d02_concat.drop_duplicates(subset="tag")
+    tags_d03_concat = tags_d03_concat.drop_duplicates(subset="tag")
 
     d02_input_time_series = []
     d03_input_time_series = []
