@@ -57,7 +57,7 @@ def main():
         label="d02",
     )
     d03_tsds = TimeSeriesDataSpec(
-        time_series=d02_input_time_series,
+        time_series=d03_input_time_series,
         aggregates=["avg"],
         granularity="10m",
         start=datetime(2014, 1, 1),
