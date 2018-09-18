@@ -18,10 +18,10 @@ def test_train_split():
     d3_train = d3[~d3_condition]
     d3_test = d3[d3_condition]
 
-    d2_train.to_csv("d2_train.csv")
-    d2_test.to_csv("d2_test.csv")
-    d3_train.to_csv("d3_train.csv")
-    d3_test.to_csv("d3_test.csv")
+    d2_train.to_csv("d2_train.csv", index=False)
+    d2_test.to_csv("d2_test.csv", index=False)
+    d3_train.to_csv("d3_train.csv", index=False)
+    d3_test.to_csv("d3_test.csv", index=False)
 
 
 if __name__ == "__main__":

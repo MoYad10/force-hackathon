@@ -17,8 +17,8 @@ def remove_MF_off():
     d2_data = d2[d2_condition]
     d3_data = d3[d3_condition]
 
-    d2_data.to_csv("d02_on_MF.csv")
-    d3_data.to_csv("d03_on_MF.csv")
+    d2_data.to_csv("d02_on_MF.csv", index=False)
+    d3_data.to_csv("d03_on_MF.csv", index=False)
 
 
 if __name__ == "__main__":
