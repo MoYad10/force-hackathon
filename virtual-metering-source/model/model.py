@@ -96,6 +96,6 @@ class Model:
 if __name__ == "__main__":
     Model.train(open)
     model = Model.load(open)
-    res = model.predict(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).reshape(1, -1))
+    res = model.predict(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]).reshape(1, -1))
     json.dumps(res)
     print(res)

@@ -6,7 +6,7 @@ import pandas as pd
 from cognite.config import configure_session
 from cognite.data_transfer_service import DataSpec, DataTransferService, TimeSeries, TimeSeriesDataSpec
 
-EXCLUDE_TAGS = [
+EXCLUDE_TAGS_D2 = [
     "SKAP_18TI3202/Y/10sSAMP",
     "SKAP_18ESV3211/BCH/10sSAMP",
     "SKAP_18ESV3220/BCH/10sSamp",
@@ -19,10 +19,26 @@ EXCLUDE_TAGS = [
     "SKAP_18ESV3219/BCH/10sSamp",
     "SKAP_18PI3230/MeasA/10sSAMP",
     "SKAP_18SCSSV3205/BCH/10sSAMP",
-    "SKAP_18SCSSV3305/BCH/10sSAMP",
     "SKAP_18HPB320/BCH/10sSAMP",
+]
+
+EXCLUDE_TAGS_D3 = [
+    "SKAP_18TI3302/Y/10sSAMP",
+    "SKAP_18ESV3311/BCH/10sSAMP",
+    "SKAP_18ESV3320/BCH/10sSamp",
+    "SKAP_18ESV3318/BCH/10sSamp",
+    "SKAP_18ESV3315/BCH/10sSamp",
+    "SKAP_18ESV3314/BCH/10sSAMP",
+    "SKAP_18ESV3313/BCH/10sSamp",
+    "SKAP_18ESV3307/BCH/10sSamp",
+    "SKAP_18ESV3306/BCH/10sSamp",
+    "SKAP_18ESV3319/BCH/10sSamp",
+    "SKAP_18PI3330/MeasA/10sSAMP",
+    "SKAP_18SCSSV3305/BCH/10sSAMP",
     "SKAP_18HPB330/BCH/10sSAMP",
 ]
+
+EXCLUDE_TAGS = EXCLUDE_TAGS_D2 + EXCLUDE_TAGS_D3
 
 
 def main():
