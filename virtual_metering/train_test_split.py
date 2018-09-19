@@ -6,8 +6,8 @@ import pandas as pd
 
 
 def test_train_split():
-    d2 = pd.read_csv("../data/d02_on_MF.csv")
-    d3 = pd.read_csv("../data/d03_on_MF.csv")
+    d2 = pd.read_csv("../data/d2_on_MF.csv")
+    d3 = pd.read_csv("../data/d3_on_MF.csv")
 
     split_time = int(datetime(2017, 1, 1).timestamp() * 1000)
     d2_condition = d2.timestamp >= split_time

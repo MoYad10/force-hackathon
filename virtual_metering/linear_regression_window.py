@@ -11,15 +11,19 @@ HISTORY_LENGTH = 1000 * 60 * 60 * 24 * 30 * 6
 MIN_HISTORY_POINTS = 5000
 
 def X_y_t(data):
-    data = data.drop(['SKAP_18SCSSV3205/BCH/10sSAMP|average', 'SKAP_18HPB320/BCH/10sSAMP|average', ], axis=1)
-    time_cond = (data.timestamp > int(datetime(2014, 3, 1).timestamp() * 1000))
-    data = data[time_cond]
-
     output_columns = [
         'SKAP_18FI381-VFlLGas/Y/10sSAMP|average',
         # 'SKAP_18FI381-VFlLH2O/Y/10sSAMP|average',
         # 'SKAP_18FI381-VFlLOil/Y/10sSAMP|average',
     ]
+
+    switch = "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"
+    # switch = "SKAP_18HV3821/BCH/10sSAMP|stepinterpolation"
+
+    condition = data[switch] > 0.9
+
+    data = data[condition]
+    data = data.drop(switch, axis=1)
 
     y = data[output_columns]
     X = data.drop(output_columns, axis=1)
@@ -87,7 +91,8 @@ def score(Y_pred, Y_true):
 
 
 def main():
-    data = pd.read_csv("../data/d2_train.csv")
+    data = pd.read_csv("../data/d2.csv")
+    data = data[:int(len(data)*0.6)]
 
     X, y, t = X_y_t(data)
     last_t = t[20000]
