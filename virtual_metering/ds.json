@@ -66,11 +66,6 @@
                     "missing_data_strategy": "linearInterpolation",
                 },
                 {
-                    "name": "SKAP_18SCSSV3205/BCH/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
                     "name": "SKAP_18TI3204/Y/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
@@ -90,18 +85,13 @@
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
-                {
-                    "name": "SKAP_18HPB320/BCH/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
             ],
             "aggregates": ["avg"],
             "granularity": "10m",
             "missing_data_strategy": null,
             "start": 1393628400000,
             "end": null,
-            "label": "d02",
+            "label": "d2",
         },
         {
             "time_series": [
@@ -188,11 +178,6 @@
                     "missing_data_strategy": "linearInterpolation",
                 },
                 {
-                    "name": "SKAP_18SCSSV3305/BCH/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
                     "name": "SKAP_18TI3304/Y/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
@@ -212,18 +197,13 @@
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
-                {
-                    "name": "SKAP_18HPB330/BCH/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
             ],
             "aggregates": ["avg"],
             "granularity": "10m",
             "missing_data_strategy": null,
             "start": 1393628400000,
             "end": null,
-            "label": "d03",
+            "label": "d3",
         },
     ],
     "files_data_spec": null,

@@ -2,6 +2,7 @@ import os
 from datetime import datetime
 
 import pandas as pd
+
 from cognite.config import configure_session
 from cognite.data_transfer_service import DataSpec, DataTransferService, TimeSeries, TimeSeriesDataSpec
 
@@ -17,6 +18,10 @@ EXCLUDE_TAGS = [
     "SKAP_18ESV3206/BCH/10sSamp",
     "SKAP_18ESV3219/BCH/10sSamp",
     "SKAP_18PI3230/MeasA/10sSAMP",
+    "SKAP_18SCSSV3205/BCH/10sSAMP",
+    "SKAP_18SCSSV3305/BCH/10sSAMP",
+    "SKAP_18HPB320/BCH/10sSAMP",
+    "SKAP_18HPB330/BCH/10sSAMP",
 ]
 
 
@@ -66,14 +71,14 @@ def main():
         aggregates=["avg"],
         granularity="10m",
         start=int(datetime(2014, 3, 1).timestamp() * 1e3),
-        label="d02",
+        label="d2",
     )
     d03_tsds = TimeSeriesDataSpec(
         time_series=d03_input_time_series,
         aggregates=["avg"],
         granularity="10m",
         start=int(datetime(2014, 3, 1).timestamp() * 1e3),
-        label="d03",
+        label="d3",
     )
 
     data_spec = DataSpec(time_series_data_specs=[d02_tsds, d03_tsds])

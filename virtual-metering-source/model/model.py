@@ -3,16 +3,13 @@ import pickle
 
 import numpy as np
 import pandas as pd
-from sklearn.linear_model import LinearRegression
 
-from model.preprocessing import preprocess
+import lightgbm as gbm
 
 
 class Model:
-    def __init__(self, model, X_scaler, y_scaler):
+    def __init__(self, model):
         self._model = model
-        self._X_scaler = X_scaler
-        self._y_scaler = y_scaler
 
     @staticmethod
     def train(file_io, **kwargs):
@@ -29,15 +26,45 @@ class Model:
         Returns:
             None
         """
-        with file_io("d2_train.csv", "rb") as f:
+        with file_io("d2.csv", "rb") as f:
             df_d02 = pd.read_csv(f)
-        X_train, X_test, y_train, y_test = preprocess(df_d02, file_io)
 
-        lr = LinearRegression()
-        model = lr.fit(X_train, y_train)
+        X, y = Model.preprocess(df_d02)
+
+        X = X.rolling(5).median()
+        X = X.fillna(method="bfill")
+        y = y.rolling(5).median()
+        y = y.fillna(method="bfill")
+
+        estimator = gbm.LGBMRegressor(n_estimators=100)
+
+        estimator.fit(X, y)
 
         with file_io("model.pkl", "wb") as f:
-            pickle.dump(model, f)
+            pickle.dump(estimator, f)
+
+    @staticmethod
+    def preprocess(df):
+        switch = "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"
+
+        condition = df[switch] > 0.9
+
+        data = df[condition]
+
+        data = data.drop(["SKAP_18SCSSV3205/BCH/10sSAMP|average", "SKAP_18HPB320/BCH/10sSAMP|average"], axis=1)
+
+        output_columns = [
+            "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
+            "SKAP_18FI381-VFlLH2O/Y/10sSAMP|average",
+            "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
+        ]
+
+        y_columns = ["SKAP_18FI381-VFlLGas/Y/10sSAMP|average"]
+
+        output_data = data[y_columns]
+        input_data = data.drop(output_columns, axis=1)
+        input_data = input_data.drop(["timestamp", "Unnamed: 0"], axis=1)
+        return input_data, output_data
 
     def predict(self, data, **kwargs):
         """Method to perform predictions on your model.
@@ -65,16 +92,12 @@ class Model:
         """
         with file_io("model.pkl", "rb") as f:
             model = pickle.load(f)
-        with file_io("y_scaler.pkl", "rb") as f:
-            y_scaler = pickle.load(f)
-        with file_io("X_scaler.pkl", "rb") as f:
-            X_scaler = pickle.load(f)
-        return Model(model, X_scaler, y_scaler)
+        return Model(model)
 
 
 if __name__ == "__main__":
     Model.train(open)
     model = Model.load(open)
-    res = model.predict(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]).reshape(1, -1))
+    res = model.predict(np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16]).reshape(1, -1))
     json.dumps(res)
     print(res)
