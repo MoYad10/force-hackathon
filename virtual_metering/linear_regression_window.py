@@ -6,15 +6,19 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 from datetime import datetime
 
-WINDOW_SIZE = 1000 * 60 * 60 * 24 * 14
+WINDOW_SIZE = 1000 * 60 * 60 * 24 * 7
 HISTORY_LENGTH = 1000 * 60 * 60 * 24 * 30 * 6
 MIN_HISTORY_POINTS = 5000
 
 def X_y_t(data):
     output_columns = [
         'SKAP_18FI381-VFlLGas/Y/10sSAMP|average',
-        # 'SKAP_18FI381-VFlLH2O/Y/10sSAMP|average',
-        # 'SKAP_18FI381-VFlLOil/Y/10sSAMP|average',
+        'SKAP_18FI381-VFlLH2O/Y/10sSAMP|average',
+        'SKAP_18FI381-VFlLOil/Y/10sSAMP|average',
+    ]
+
+    y_columns = [
+        'SKAP_18FI381-VFlLGas/Y/10sSAMP|average',
     ]
 
     switch = "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"
@@ -25,7 +29,7 @@ def X_y_t(data):
     data = data[condition]
     data = data.drop(switch, axis=1)
 
-    y = data[output_columns]
+    y = data[y_columns]
     X = data.drop(output_columns, axis=1)
     X = X.drop(['timestamp', 'Unnamed: 0'], axis=1)
 
@@ -47,9 +51,10 @@ def preprocess(X, y, t):
         y = y[t > history_split]
         t = t[t > history_split]
 
-    train_val_split = now - WINDOW_SIZE
+    train_val_split = now# - WINDOW_SIZE
     X_train = X[t < train_val_split]
     X_test = X[t >= train_val_split]
+    print(X_test.shape)
 
     y_train = y[t < train_val_split]
     y_test = y[t >= train_val_split]
@@ -65,12 +70,20 @@ def preprocess(X, y, t):
     X_train_scaled = X_train_scaled.clip(-5, 5)
     X_test_scaled = X_test_scaled.clip(-5, 5)
 
+    with open("X_scaler.pkl", "wb") as f:
+        pickle.dump(X_scaler, f)
+
+    with open("y_scaler.pkl", "wb") as f:
+        pickle.dump(y_scaler, f)
+
     return X_train_scaled, X_test_scaled, y_train_scaled, y_test_scaled, X_scaler, y_scaler
 
 
 def train(X, y):
     lr = LinearRegression()
-    model = lr.fit(X, y, sample_weight=np.linspace(0, 1, len(X)))
+    model = lr.fit(X, y, sample_weight=np.linspace(0, 1, len(X))**2)
+    with open("model.pkl", "wb") as f:
+        pickle.dump(model, f)
     return model
 
 
@@ -95,11 +108,12 @@ def main():
     data = data[:int(len(data)*0.6)]
 
     X, y, t = X_y_t(data)
+    print(X.shape)
     last_t = t[20000]
     y_trues, y_preds = None, None
     xs = None
     for i in range(len(X)):
-        if t[i] > last_t + WINDOW_SIZE:
+        if t[i] > last_t + WINDOW_SIZE or i == len(X) - 1:
             last_t = t[i]
 
             X_train, X_test, y_train, y_test, X_scaler, y_scaler = preprocess(X[:i], y[:i], t[:i])
@@ -114,11 +128,11 @@ def main():
 
     print(score(y_preds, y_trues))
 
-    # plt.plot(y_preds, label='pred')
-    # plt.plot(y_trues, label='true')
-    # plt.plot(xs, label='x')
-    # plt.legend()
-    # plt.show()
+    plt.plot(y_preds, label='pred')
+    plt.plot(y_trues, label='true')
+    plt.plot(xs, label='x')
+    plt.legend()
+    plt.show()
 
 if __name__ == "__main__":
     main()

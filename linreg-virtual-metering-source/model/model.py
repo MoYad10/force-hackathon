@@ -53,13 +53,19 @@ class Model:
 
         output_columns = [
             "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
-            # "SKAP_18FI381-VFlLH2O/Y/10sSAMP|average",
-            # "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
+            "SKAP_18FI381-VFlLH2O/Y/10sSAMP|average",
+            "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
+        ]
+        y_columns = [
+            "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
         ]
 
-        y = data[output_columns]
+        y = data[y_columns]
         X = data.drop(output_columns, axis=1)
-        X = X.drop(["timestamp", "Unnamed: 0"], axis=1)
+        X = X.drop(["timestamp"], axis=1)
+
+        X = X.fillna(method="bfill")
+        y = y.fillna(method="bfill")
 
         X_scaler = StandardScaler()
         X = X_scaler.fit_transform(X)
@@ -119,6 +125,6 @@ class Model:
 if __name__ == "__main__":
     Model.train(open, well="2")
     model = Model.load(open)
-    res = model.predict([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]])
+    res = model.predict([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]])
     json.dumps(res)
     print(res)

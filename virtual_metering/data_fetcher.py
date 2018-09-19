@@ -89,15 +89,15 @@ def main():
     d02_tsds = TimeSeriesDataSpec(
         time_series=d02_input_time_series,
         aggregates=["avg"],
-        granularity="10m",
-        start=int(datetime(2014, 3, 1).timestamp() * 1e3),
+        granularity="10s",
+        start=int(datetime(2017, 3, 1).timestamp() * 1e3),
         label="d2",
     )
     d03_tsds = TimeSeriesDataSpec(
         time_series=d03_input_time_series,
         aggregates=["avg"],
-        granularity="10m",
-        start=int(datetime(2014, 3, 1).timestamp() * 1e3),
+        granularity="10s",
+        start=int(datetime(2017, 3, 1).timestamp() * 1e3),
         label="d3",
     )
 
