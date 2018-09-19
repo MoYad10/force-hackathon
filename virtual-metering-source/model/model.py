@@ -51,8 +51,6 @@ class Model:
 
         data = df[condition]
 
-        data = data.drop(["SKAP_18SCSSV3205/BCH/10sSAMP|average", "SKAP_18HPB320/BCH/10sSAMP|average"], axis=1)
-
         output_columns = [
             "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
             "SKAP_18FI381-VFlLH2O/Y/10sSAMP|average",
@@ -63,7 +61,7 @@ class Model:
 
         output_data = data[y_columns]
         input_data = data.drop(output_columns, axis=1)
-        input_data = input_data.drop(["timestamp", "Unnamed: 0"], axis=1)
+        input_data = input_data.drop(["timestamp"], axis=1)
         return input_data, output_data
 
     def predict(self, data, **kwargs):
