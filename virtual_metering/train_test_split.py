@@ -19,7 +19,7 @@ def test_train_split():
     d3_train = d3[~d3_condition]
     d3_test = d3[d3_condition]
 
-    d2_train.to_csv("../data/d2.csv", index=False)
+    d2_train.to_csv("../data/d2_train.csv", index=False)
     d2_test.to_csv("../data/d2_test.csv", index=False)
     d3_train.to_csv("../data/d3_train.csv", index=False)
     d3_test.to_csv("../data/d3_test.csv", index=False)
