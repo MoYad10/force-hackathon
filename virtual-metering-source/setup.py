@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-REQUIRED_PACKAGES = ["scikit-learn==0.19.2", "pandas==0.23.4"]
+REQUIRED_PACKAGES = ["lightgbm==2.2.0", "pandas==0.23.4"]
 
 setup(
     name="my_model",

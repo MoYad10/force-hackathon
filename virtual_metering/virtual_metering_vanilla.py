@@ -92,7 +92,7 @@ def plot(y_pred, y_true):
 
 
 def main():
-    df_d02 = pd.read_csv("../data/d2_train.csv")
+    df_d02 = pd.read_csv("../data/d2.csv")
     X_train, X_test, y_train, y_test = preprocess(df_d02)
 
     train(X_train, y_train)

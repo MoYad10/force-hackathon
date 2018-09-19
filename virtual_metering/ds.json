@@ -100,8 +100,8 @@
             "granularity": "10m",
             "missing_data_strategy": null,
             "start": 1393628400000,
-            "end": null,
-            "label": "d02",
+            "end": 1483225200000,
+            "label": "d2",
         },
         {
             "time_series": [
@@ -222,8 +222,8 @@
             "granularity": "10m",
             "missing_data_strategy": null,
             "start": 1393628400000,
-            "end": null,
-            "label": "d03",
+            "end": 1483225200000,
+            "label": "d3",
         },
     ],
     "files_data_spec": null,
