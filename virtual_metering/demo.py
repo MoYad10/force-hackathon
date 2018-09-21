@@ -7,14 +7,16 @@ import numpy as np
 import pandas as pd
 
 from cognite._utils import APIError
-from cognite.config import configure_session
+from cognite.config import configure_session, set_number_of_retries
 from cognite.data_transfer_service import DataSpec, DataTransferService, TimeSeries, TimeSeriesDataSpec
 from cognite.v05.dto import Datapoint
 from cognite.v05.dto import TimeSeries as TimeSeriesDTO
 from cognite.v05.timeseries import post_datapoints, post_time_series
+from cognite.v06 import models
 from virtual_metering.data_fetcher import EXCLUDE_TAGS
 
 configure_session(api_key=os.getenv("COGNITE_API_KEY"), project="akerbp", debug=True)
+set_number_of_retries(3)
 
 try:
     ts = TimeSeriesDTO(name="SKAP_18FI381-VFlLGas/Y/10sSAMP_calc_D02_2", asset_id=8129784932439587)
@@ -33,22 +35,22 @@ def main():
         "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
     ]
     router = "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"
-    last_processed_timestamp = int(datetime(2018, 9, 19, 8).timestamp() * 1e3)
+    one_hour_ago = datetime.now() - timedelta(0, 3600)
+    last_processed_timestamp = int(one_hour_ago.timestamp() * 1e3)
 
     is_first = True
 
     while True:
         d2_inputs = pd.DataFrame([[np.nan, np.nan, np.nan, np.nan, np.nan, np.nan]])
         d2_inputs.columns = ["hoho", "blaa", "hgi"] + output_columns
-        while d2_inputs.drop(output_columns, axis=1).isna().any().any():
+        input_has_nans = True
+        while input_has_nans:
             ds = generate_data_spec(last_processed_timestamp)
-
             dts = DataTransferService(data_spec=ds)
-            failed = True
-            while failed:
+            while True:
                 try:
                     d2_inputs = dts.get_dataframes()["d2"]
-                    failed = False
+                    break
                 except:
                     time.sleep(2)
             any_nans_per_column = d2_inputs.drop(output_columns, axis=1).isna().any()
@@ -62,6 +64,7 @@ def main():
 
             print(datetime.fromtimestamp(last_processed_timestamp * 1e-3))
             time.sleep(2)
+            input_has_nans = d2_inputs.drop(output_columns, axis=1).isna().any().any()
 
         last_ts = d2_inputs["timestamp"].iloc[-1]
 
@@ -70,47 +73,23 @@ def main():
             d2_inputs.drop("timestamp", axis=1).drop(router, axis=1).drop(output_columns, axis=1).values.tolist()
         )
         timestamps = d2_inputs["timestamp"]
-        # res = models.online_predict(
-        #     model_id=3885574571413770, version_id=2537754531443017, instances=[d2_inputs_formatted]
-        # )
+        res = models.online_predict(
+            model_id=3885574571413770, version_id=4299054386152423, instances=[d2_inputs_formatted]
+        )
 
-        with open("model.pkl", "rb") as f:
-            model = pickle.load(f)
-        with open("X_scaler.pkl", "rb") as f:
-            X_scaler = pickle.load(f)
-        with open("y_scaler.pkl", "rb") as f:
-            y_scaler = pickle.load(f)
-
-        d2_inputs_formatted = X_scaler.transform(d2_inputs_formatted)
-
-        print(d2_inputs_formatted.tolist()[0])
-        res = model.predict(d2_inputs_formatted)
-        res = y_scaler.inverse_transform(res)
-        res = [int(r[0]) for r in res]
+        predictions = res["predictions"][0]
+        formatted_predictions = [int(pred[0]) for pred in predictions]
         last_processed_timestamp = int(last_ts)
 
-        dps = [Datapoint(ts, value) for ts, value in zip(timestamps.values.tolist(), res)]
+        dps = [Datapoint(ts, value) for ts, value in zip(timestamps.values.tolist(), formatted_predictions)]
         print([dp.value for dp in dps])
         if is_first:
-            failed = True
-            while failed:
-                try:
-                    post_datapoints(name="SKAP_18FI381-VFlLGas/Y/10sSAMP_calc_D02_2", datapoints=dps)
-                    failed = False
-                except:
-                    time.sleep(2)
+            post_datapoints(name="SKAP_18FI381-VFlLGas/Y/10sSAMP_calc_D02_2", datapoints=dps)
             is_first = False
         else:
             for dp in dps:
-                failed = True
-                while failed:
-                    try:
-                        post_datapoints(name="SKAP_18FI381-VFlLGas/Y/10sSAMP_calc_D02_2", datapoints=[dp])
-                        failed = False
-                    except:
-                        time.sleep(2)
+                post_datapoints(name="SKAP_18FI381-VFlLGas/Y/10sSAMP_calc_D02_2", datapoints=[dp])
                 time.sleep(5)
-
 
 def generate_data_spec(last_processed_timestamp, granularity="10s"):
     tags_d03 = []
