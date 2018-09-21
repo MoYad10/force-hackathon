@@ -3,11 +3,6 @@
         {
             "time_series": [
                 {"name": "SKAP_13PI6128/Y/PRIM", "aggregates": ["avg"], "missing_data_strategy": "linearInterpolation"},
-                {
-                    "name": "SKAP_13TI6147/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
                 {"name": "SKAP_13ZI6133/Y/PRIM", "aggregates": ["avg"], "missing_data_strategy": "linearInterpolation"},
                 {"name": "SKAP_18HV3806/BCH/10sSAMP", "aggregates": ["step"], "missing_data_strategy": "ffill"},
                 {
@@ -46,27 +41,12 @@
                     "missing_data_strategy": "linearInterpolation",
                 },
                 {
-                    "name": "SKAP_18PI3201/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
-                    "name": "SKAP_18PI3203/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
                     "name": "SKAP_18PI3210/MeasA/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
                 {
                     "name": "SKAP_18PI3217/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
-                    "name": "SKAP_18TI3204/Y/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
@@ -96,11 +76,6 @@
         {
             "time_series": [
                 {"name": "SKAP_13PI6128/Y/PRIM", "aggregates": ["avg"], "missing_data_strategy": "linearInterpolation"},
-                {
-                    "name": "SKAP_13TI6147/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
                 {"name": "SKAP_13ZI6133/Y/PRIM", "aggregates": ["avg"], "missing_data_strategy": "linearInterpolation"},
                 {"name": "SKAP_18HV3821/BCH/10sSAMP", "aggregates": ["step"], "missing_data_strategy": "ffill"},
                 {
@@ -144,24 +119,10 @@
                     "missing_data_strategy": "linearInterpolation",
                 },
                 {
-                    "name": "SKAP_18TI3302/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
                     "name": "SKAP_18PI3303/Y/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
-                {"name": "SKAP_18ESV3306/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3307/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3311/BCH/10sSAMP", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3313/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3314/BCH/10sSAMP", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3315/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3318/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3319/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
-                {"name": "SKAP_18ESV3320/BCH/10sSamp", "aggregates": ["step"], "missing_data_strategy": "ffill"},
                 {
                     "name": "SKAP_18PI3310/MeasA/10sSAMP",
                     "aggregates": ["avg"],
@@ -169,11 +130,6 @@
                 },
                 {
                     "name": "SKAP_18PI3317/Y/10sSAMP",
-                    "aggregates": ["avg"],
-                    "missing_data_strategy": "linearInterpolation",
-                },
-                {
-                    "name": "SKAP_18PI3330/MeasA/10sSAMP",
                     "aggregates": ["avg"],
                     "missing_data_strategy": "linearInterpolation",
                 },
