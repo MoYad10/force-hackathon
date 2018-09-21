@@ -3,6 +3,7 @@ import pickle
 
 import numpy as np
 import pandas as pd
+import lightgbm as gbm
 
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import LinearRegression
@@ -29,13 +30,14 @@ class Model:
         Returns:
             None
         """
-        with file_io("d" + well + ".csv", "rb") as f:
+        with file_io("d" + well + "_train.csv", "rb") as f:
             df = pd.read_csv(f)
+            df = df.dropna()
 
         X, y = Model.train_preprocess(df, well, file_io)
 
-        model = LinearRegression()
-        model.fit(X, y, sample_weight=np.linspace(0, 1, len(X)))
+        model = gbm.LGBMRegressor(n_estimators=100)
+        model.fit(X, y)
 
         with file_io("model.pkl", "wb") as f:
             pickle.dump(model, f)
@@ -44,11 +46,22 @@ class Model:
     def train_preprocess(df, well, file_io):
         D2_switch = "SKAP_18HV3806/BCH/10sSAMP|stepinterpolation"
         D3_switch = "SKAP_18HV3821/BCH/10sSAMP|stepinterpolation"
-        switch = D2_switch if well == '2' else D3_switch
+        switch = D2_switch if well == "2" else D3_switch
 
         condition = df[switch] > 0.9
+        cint = condition.values.astype(int)
+        sw = np.zeros(len(df))
+        K = 6
+        val = np.ones(len(sw[K:-K]))
+        for i in range(0, 2 * K):
+            ixm = i
+            ixp = -2 * K + i
+            val *= cint[ixm:ixp]
 
+        sw[K:-K] = val
+        condition = sw.astype(bool)
         data = df[condition]
+
         data = data.drop([switch], axis=1)
 
         output_columns = [
@@ -56,16 +69,11 @@ class Model:
             "SKAP_18FI381-VFlLH2O/Y/10sSAMP|average",
             "SKAP_18FI381-VFlLOil/Y/10sSAMP|average",
         ]
-        y_columns = [
-            "SKAP_18FI381-VFlLGas/Y/10sSAMP|average",
-        ]
 
-        y = data[y_columns]
+        y = data[["SKAP_18FI381-VFlLGas/Y/10sSAMP|average"]]
+        # y = data[output_columns]
         X = data.drop(output_columns, axis=1)
-        X = X.drop(["timestamp"], axis=1)
-
-        X = X.fillna(method="bfill")
-        y = y.fillna(method="bfill")
+        X = X.drop(["timestamp", "Unnamed: 0"], axis=1)
 
         X_scaler = StandardScaler()
         X = X_scaler.fit_transform(X)
@@ -79,7 +87,6 @@ class Model:
         with file_io("y_scaler.pkl", "wb") as f:
             pickle.dump(y_scaler, f)
 
-        X = X.clip(-5, 5)
         X = X.clip(-5, 5)
 
         return X, y
@@ -125,6 +132,6 @@ class Model:
 if __name__ == "__main__":
     Model.train(open, well="2")
     model = Model.load(open)
-    res = model.predict([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]])
+    res = model.predict([[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17]])
     json.dumps(res)
     print(res)
